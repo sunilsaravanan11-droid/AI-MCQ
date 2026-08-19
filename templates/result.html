@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Results · AI MCQ Generator{% endblock %}
+
+{% block content %}
+<section class="panel result-summary {{ 'result-pass' if attempt['percentage'] >= 50 else 'result-fail' }}">
+  <p class="eyebrow">{{ attempt['topic'] }} &middot; {{ attempt['difficulty'] }}</p>
+  <h1 class="result-score">{{ attempt['score'] }}<span class="result-score-total">/{{ attempt['total'] }}</span></h1>
+  <p class="result-percentage">{{ attempt['percentage'] }}% correct</p>
+
+  <div class="streak-banner">
+    <span class="flame-mini">&#128293;</span>
+    <span>Streak updated &mdash; <strong>{{ streak.current_streak }}</strong> {{ 'day' if streak.current_streak == 1 else 'days' }} in a row</span>
+  </div>
+
+  <div class="result-actions">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to dashboard</a>
+  </div>
+</section>
+
+<section class="panel">
+  <h2 class="panel-title">Answer review</h2>
+  <div class="review-list">
+    {% for item in review %}
+      <div class="review-item {{ 'review-correct' if item.is_correct else 'review-wrong' }}">
+        <div class="review-question">
+          <span class="review-badge">{{ 'Correct' if item.is_correct else 'Wrong' }}</span>
+          <span>{{ loop.index }}. {{ item.question }}</span>
+        </div>
+        <div class="review-options">
+          {% for opt in item.options %}
+            {% set letters = ['A', 'B', 'C', 'D'] %}
+            <div class="review-option
+              {% if loop.index0 == item.correct_index %} review-option-correct{% endif %}
+              {% if loop.index0 == item.selected_index and item.selected_index != item.correct_index %} review-option-selected-wrong{% endif %}">
+              <span class="option-letter">{{ letters[loop.index0] }}</span>
+              <span class="option-text">{{ opt }}</span>
+              {% if loop.index0 == item.correct_index %}<span class="review-tag">Correct answer</span>{% endif %}
+              {% if loop.index0 == item.selected_index and item.selected_index != item.correct_index %}<span class="review-tag review-tag-wrong">Your answer</span>{% endif %}
+            </div>
+          {% endfor %}
+          {% if item.selected_index is none %}
+            <div class="review-skipped">You did not answer this question.</div>
+          {% endif %}
+        </div>
+        {% if item.explanation %}
+          <div class="review-explanation">{{ item.explanation }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

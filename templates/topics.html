@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Select Topic · AI MCQ Generator{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('dashboard') }}" class="back-link">&larr; Back to dashboard</a>
+
+<section class="panel">
+  <h2 class="panel-title"><span class="step-num">3</span> Choose a topic from &ldquo;{{ document['filename'] }}&rdquo;</h2>
+  <p class="panel-hint">These topics were detected automatically from your PDF.</p>
+
+  <form action="{{ url_for('generate_quiz') }}" method="post" id="quiz-form">
+    <input type="hidden" name="document_id" value="{{ document['id'] }}">
+
+    <div class="topic-grid" id="topic-grid">
+      {% for topic in topics %}
+        <label class="topic-card">
+          <input type="radio" name="topic" value="{{ topic }}" {% if loop.first %}checked{% endif %} required>
+          <span class="topic-card-text">{{ topic }}</span>
+        </label>
+      {% endfor %}
+    </div>
+
+    <div class="config-row">
+      <div class="config-field">
+        <label class="config-label">Number of questions</label>
+        <div class="pill-group">
+          {% for n in [5, 10, 15, 20] %}
+            <label class="pill">
+              <input type="radio" name="num_questions" value="{{ n }}" {% if n == 5 %}checked{% endif %}>
+              <span>{{ n }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="config-field">
+        <label class="config-label">Difficulty</label>
+        <div class="pill-group">
+          {% for d in ['Easy', 'Medium', 'Hard'] %}
+            <label class="pill">
+              <input type="radio" name="difficulty" value="{{ d }}" {% if d == 'Medium' %}checked{% endif %}>
+              <span>{{ d }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-wide" id="generate-btn">
+      <span id="generate-btn-text">Generate MCQs</span>
+    </button>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById('quiz-form').addEventListener('submit', function () {
+    var btn = document.getElementById('generate-btn');
+    var text = document.getElementById('generate-btn-text');
+    btn.disabled = true;
+    text.textContent = 'Generating questions from your PDF...';
+    btn.classList.add('btn-loading');
+  });
+</script>
+{% endblock %}

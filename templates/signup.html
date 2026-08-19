@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create account · AI MCQ Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-intro">
+      <div class="login-brand"><span class="brand-mark">&#128218;</span> AI MCQ Generator</div>
+      <p class="eyebrow">Build your study rhythm</p>
+      <h1>One account.<br>More momentum.</h1>
+      <p class="login-copy">Create your study space, turn PDFs into quizzes, and keep your learning streak moving.</p>
+    </section>
+
+    <section class="login-panel" aria-labelledby="signup-title">
+      <div class="login-panel-mark">&#10022;</div>
+      <p class="eyebrow">Get started</p>
+      <h2 id="signup-title">Create your account</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack">
+            {% for category, message in messages %}
+              <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <form method="post" class="login-form">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" minlength="3" required autofocus>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+        <label for="password">Password</label>
+        <div class="password-field">
+          <input id="password" name="password" type="password" autocomplete="new-password" minlength="6" required>
+          <button type="button" class="password-toggle" data-password-toggle="password" aria-label="Show password" title="Show password">&#128065;</button>
+        </div>
+        <label for="confirmation">Confirm password</label>
+        <div class="password-field">
+          <input id="confirmation" name="confirmation" type="password" autocomplete="new-password" minlength="6" required>
+          <button type="button" class="password-toggle" data-password-toggle="confirmation" aria-label="Show password" title="Show password">&#128065;</button>
+        </div>
+        <button type="submit" class="btn btn-primary">Create account <span aria-hidden="true">&rarr;</span></button>
+      </form>
+      <p class="login-note">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    </section>
+  </main>
+</body>
+</html>

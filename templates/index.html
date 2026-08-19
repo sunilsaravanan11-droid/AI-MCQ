@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · AI MCQ Generator{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Study smarter, one PDF at a time</p>
+  <h1>Turn any PDF into a quiz in seconds.</h1>
+  <p class="hero-sub">Upload your notes, pick a topic, and let AI build a focused multiple-choice quiz &mdash; strictly from your material.</p>
+</section>
+
+<div class="grid-two">
+
+  <section class="panel">
+    <h2 class="panel-title"><span class="step-num">1</span> Upload a study PDF</h2>
+    <p class="panel-hint">We'll extract the text and detect the topics inside it.</p>
+    <form action="{{ url_for('upload_pdf') }}" method="post" enctype="multipart/form-data" class="upload-form" id="upload-form">
+      <label for="pdf_file" class="dropzone" id="dropzone">
+        <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required>
+        <span class="dropzone-icon">&#128196;</span>
+        <span class="dropzone-text" id="dropzone-text">Click to choose a PDF, or drag it here</span>
+      </label>
+      <button type="submit" class="btn btn-primary" id="upload-btn">
+        <span id="upload-btn-text">Upload &amp; Analyze</span>
+      </button>
+    </form>
+  </section>
+
+  <section class="panel flame-panel">
+    <h2 class="panel-title">Your study streak</h2>
+    <div class="flame-display {{ 'flame-active' if streak.current_streak > 0 else 'flame-cold' }}">
+      <div class="flame-icon">&#128293;</div>
+      <div class="flame-count">{{ streak.current_streak }}</div>
+      <div class="flame-label">{{ 'day' if streak.current_streak == 1 else 'days' }} in a row</div>
+    </div>
+    <div class="streak-stats">
+      <div class="streak-stat">
+        <span class="streak-stat-value">{{ streak.longest_streak }}</span>
+        <span class="streak-stat-label">Longest streak</span>
+      </div>
+      <div class="streak-stat">
+        <span class="streak-stat-value">{{ streak.last_study_date or 'Not yet' }}</span>
+        <span class="streak-stat-label">Last studied</span>
+      </div>
+    </div>
+    {% if recent_attempt %}
+    <div class="recent-score">
+      <span class="recent-score-label">Most recent quiz</span>
+      <span class="recent-score-topic">{{ recent_attempt['topic'] }}</span>
+      <span class="recent-score-value">{{ recent_attempt['score'] }}/{{ recent_attempt['total'] }} &middot; {{ recent_attempt['percentage'] }}%</span>
+    </div>
+    {% endif %}
+  </section>
+
+</div>
+
+<section class="panel">
+  <h2 class="panel-title"><span class="step-num">2</span> Recent documents</h2>
+  {% if documents %}
+    <ul class="doc-list">
+      {% for doc in documents %}
+        <li class="doc-item">
+          <div class="doc-info">
+            <span class="doc-icon">&#128196;</span>
+            <div>
+              <div class="doc-name">{{ doc['filename'] }}</div>
+              <div class="doc-date">Uploaded {{ doc['uploaded_at'][:16].replace('T', ' ') }}</div>
+            </div>
+          </div>
+          <a href="{{ url_for('select_topic', document_id=doc['id']) }}" class="btn btn-secondary">Pick topic &amp; generate quiz</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty-state">No PDFs uploaded yet. Upload one above to get started.</p>
+  {% endif %}
+</section>
+{% endblock %}

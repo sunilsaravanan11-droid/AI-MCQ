@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}AI MCQ Generator{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a href="{{ url_for('dashboard') }}" class="brand">
+      <span class="brand-mark">&#128218;</span>
+      <span class="brand-text">AI MCQ Generator</span>
+    </a>
+    <div class="topbar-streak">
+      <span class="flame-mini">&#128293;</span>
+      <span id="topbar-streak-count">{{ streak.current_streak if streak is defined else 0 }}</span>
+      <span class="topbar-streak-label">day streak</span>
+    </div>
+    {% if logged_in %}
+      <a href="{{ url_for('logout') }}" class="topbar-logout">Log out</a>
+    {% endif %}
+  </header>
+
+  <main class="page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    Upload &rarr; Select Topic &rarr; Generate MCQs &rarr; Take Quiz &rarr; Get Score &rarr; Maintain Streak &#128293;
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
