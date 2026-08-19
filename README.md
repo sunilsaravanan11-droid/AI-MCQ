@@ -90,6 +90,34 @@ pip install -r requirements.txt
 python app.py
 ```
 
+## Deploy
+
+### Render (recommended)
+
+This project includes `render.yaml` and uses Gunicorn in production.
+
+1. Push the repository to GitHub.
+2. In Render, choose **New +** → **Blueprint** and select this repository.
+3. Add the secret values when Render asks for them:
+   `GROQ_API_KEY` and `LOGIN_PASSWORD`.
+4. Deploy. Render runs the app with `gunicorn app:app`.
+
+The current app stores SQLite data and uploaded PDFs on the local filesystem.
+For production on Render, attach a persistent disk or move the database and
+uploads to managed services.
+
+### Vercel
+
+This project includes `vercel.json` for Flask routing. Add these environment
+variables in the Vercel project settings:
+`AI_PROVIDER`, `GROQ_API_KEY`, `GROQ_MODEL`, `FLASK_SECRET_KEY`,
+`LOGIN_USERNAME`, `LOGIN_EMAIL`, and `LOGIN_PASSWORD`.
+
+Vercel serverless functions have an ephemeral filesystem, so SQLite writes and
+uploaded PDFs are not reliable there. Use Render for the current full app, or
+replace SQLite and local uploads with hosted database and object-storage
+services before using Vercel in production.
+
 ## How it works
 
 1. **Create an account** — Enter a username, email, password, and password

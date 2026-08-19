@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: ai-mcq-generator
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    healthCheckPath: /login
+    envVars:
+      - key: AI_PROVIDER
+        value: groq
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+      - key: GROQ_API_KEY
+        sync: false
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: LOGIN_USERNAME
+        value: student
+      - key: LOGIN_EMAIL
+        value: student@example.com
+      - key: LOGIN_PASSWORD
+        sync: false
