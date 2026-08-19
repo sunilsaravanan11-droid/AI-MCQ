@@ -102,6 +102,7 @@ ai_mcq_generator/
 
 - The database (`data/app.db`) and uploaded files (`uploads/`) are created
   automatically on first run.
-- No login system — this is intentionally a single-user, local study tool.
+- Local accounts are stored in SQLite with hashed passwords. Set the default
+   account values in `.env` before first use.
 - If a PDF is very large, the app focuses AI calls on the most relevant
   excerpt for the chosen topic to keep generation fast and on-topic.
