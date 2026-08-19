@@ -1,10 +1,10 @@
-# AI MCQ Generator 🔥
+# AI MCQ Generator
 
-A simple, beginner-friendly web app for students: upload a study PDF, pick a
-topic, generate multiple-choice questions with AI, take the quiz, get your
-score, and keep a daily study streak going.
+A local study web app for students. Create an account, upload a study PDF,
+choose a topic, generate multiple-choice questions with AI, take the quiz,
+review your score, and maintain a daily study streak.
 
-**Flow:** Upload PDF → Select Topic → Generate MCQs → Take Quiz → Get Score → Maintain Streak 🔥
+**Flow:** Create account → Log in → Upload PDF → Select topic → Generate MCQs → Take quiz → Review score
 
 ## Tech stack
 
@@ -25,7 +25,9 @@ ai_mcq_generator/
 │   ├── ai_service.py        # Calls the AI to detect topics & generate MCQs
 │   └── streak_service.py    # Daily streak logic
 ├── templates/                # Jinja HTML pages
-│   ├── base.html
+│   ├── login.html            # Login form
+│   ├── signup.html           # Account creation form
+│   ├── base.html             # Shared layout
 │   ├── index.html            # Dashboard
 │   ├── topics.html           # Topic + quiz settings
 │   ├── quiz.html              # One-question-at-a-time quiz
@@ -75,25 +77,40 @@ ai_mcq_generator/
    python app.py
    ```
 
-   Open **http://localhost:5000** in your browser.
+   Open **http://127.0.0.1:5000** in your browser. New visitors are sent to
+   the account creation page first.
+
+### Windows PowerShell
+
+```powershell
+cd "ai_mcq_generator 1"
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python app.py
+```
 
 ## How it works
 
-1. **Upload PDF** — The PDF is parsed with PyMuPDF to plain text. The text
+1. **Create an account** — Enter a username, email, password, and password
+   confirmation. Passwords are stored as hashes in SQLite.
+2. **Log in** — Authenticate with the account credentials. The dashboard and
+   quiz routes are protected by a Flask session.
+3. **Upload PDF** — The PDF is parsed with PyMuPDF to plain text. The text
    is sent to the AI, which returns a short list of topics actually present
    in the document.
-2. **Select Topic** — Pick one detected topic, how many questions (5/10/15/20),
+4. **Select topic** — Pick one detected topic, how many questions (5/10/15/20),
    and a difficulty (Easy/Medium/Hard).
-3. **Generate MCQs** — The app pulls the paragraphs most relevant to that
+5. **Generate MCQs** — The app pulls the paragraphs most relevant to that
    topic out of the PDF text and asks the AI to write MCQs **strictly from
    that material** — 4 options, exactly one correct answer, plus a short
    explanation. The correct answers are stored server-side only.
-4. **Take Quiz** — Questions are shown one at a time with a progress bar.
+6. **Take quiz** — Questions are shown one at a time with a progress bar.
    The correct answers are never sent to the browser until you submit.
-5. **Get Score** — The server grades your answers, shows your score,
+7. **Get score** — The server grades your answers, shows your score,
    percentage, and a full review (your answer vs. the correct one, with
    an explanation for each question).
-6. **Study Streak 🔥** — Completing at least one quiz today counts as a
+8. **Study streak** — Completing at least one quiz today counts as a
    study day. Multiple quizzes the same day still count once. Missing a
    day resets the streak to 1 the next time you study. The dashboard shows
    your current streak, longest streak, and last study date.
@@ -102,7 +119,13 @@ ai_mcq_generator/
 
 - The database (`data/app.db`) and uploaded files (`uploads/`) are created
   automatically on first run.
-- Local accounts are stored in SQLite with hashed passwords. Set the default
-   account values in `.env` before first use.
+- Local accounts are stored in `data/app.db` with hashed passwords.
+- The values in `LOGIN_USERNAME`, `LOGIN_EMAIL`, and `LOGIN_PASSWORD` create a
+   default account on first run if it does not already exist.
+- Use a strong `FLASK_SECRET_KEY` and never commit `.env` or paste API keys
+   into source files. The `.gitignore` excludes `.env`, the SQLite database,
+   and uploaded PDFs.
+- The password fields on the login and signup pages include show/hide eye
+   controls.
 - If a PDF is very large, the app focuses AI calls on the most relevant
   excerpt for the chosen topic to keep generation fast and on-topic.
