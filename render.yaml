@@ -4,7 +4,7 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
-    healthCheckPath: /login
+    healthCheckPath: /
     envVars:
       - key: AI_PROVIDER
         value: groq
@@ -14,9 +14,3 @@ services:
         sync: false
       - key: FLASK_SECRET_KEY
         generateValue: true
-      - key: LOGIN_USERNAME
-        value: student
-      - key: LOGIN_EMAIL
-        value: student@example.com
-      - key: LOGIN_PASSWORD
-        sync: false
