@@ -20,7 +20,7 @@ from services.ai_service import detect_topics, generate_mcqs, AIServiceError
 from services.streak_service import get_streak_info, record_study_session
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+UPLOAD_FOLDER = os.path.join("/tmp", "uploads")
 ALLOWED_EXTENSIONS = {"pdf"}
 
 app = Flask(__name__)
